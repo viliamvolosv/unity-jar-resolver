@@ -57,12 +57,13 @@ project.ext {
   }
   saveProperty("UNITY_EXE", unityExe, cacheProperties)
 
+
   // Path fragment that is the parent of the unity executable install location.
   // This is used to find the unity root directory from the editor executable.
   String unityExeParentPath =
     [(OperatingSystem.UNKNOWN): "Editor",
      (OperatingSystem.MAC_OSX): "Unity.app/Contents/MacOS",
-     (OperatingSystem.WINDOWS): "Editor",
+     (OperatingSystem.WINDOWS): "",
      (OperatingSystem.LINUX): "Editor"][operatingSystem]
   File unityRootDir = findFileProperty(
     "UNITY_DIR", new File(unityExe.parentFile.absolutePath -
