@@ -29,6 +29,13 @@ project.ext {
   // Save the current OS.
   operatingSystem = OperatingSystem.getOperatingSystem()
 
+  // Store variable to know if we can support iOS on this host
+  operatingSystemSupportsIos =
+    [(OperatingSystem.UNKNOWN): false,
+     (OperatingSystem.MAC_OSX): true,
+     (OperatingSystem.WINDOWS): false,
+     (OperatingSystem.LINUX): false][operatingSystem]
+
   // Default installation path for Unity based upon the host operating system.
   List<String> defaultUnityPaths =
     [(OperatingSystem.UNKNOWN): ["Unity"],
@@ -100,13 +107,14 @@ project.ext {
         exclude unitySearchDirExcludes
       }
     })
-  if (unityIosPath == null) {
+  if (operatingSystemSupportsIos && unityIosPath == null) {
     // iOS support is *required* to build the iOS resolver.
     throw new StopActionException(
       "UnityEditor.iOS.Extensions.dll directory (UNITY_IOS_PLAYBACK_PATH) " +
       "not found.")
   }
-  saveProperty("UNITY_IOS_PLAYBACK_PATH", unityIosPath, cacheProperties)
+  else
+    saveProperty("UNITY_IOS_PLAYBACK_PATH", unityIosPath, cacheProperties)
 
   // Find xbuild to build the dlls.
   xbuildExe = getFileFromPropertyOrFileTree(
@@ -776,10 +784,10 @@ Task createXbuildTask(String taskName, String taskDescription,
                sprintf("/property:UnityHintPath=%s",
                        project.ext.unityDllPath.absolutePath),
                sprintf("/property:UnityIosPath=%s",
-                       project.ext.unityIosPath.absolutePath),
+                       project.ext.operatingSystemSupportsIos ? project.ext.unityIosPath.absolutePath : ""),
                sprintf("/property:NUnityHintPath=%s",
                        project.ext.unityNUnitDll ?
-                 project.ext.unityNUnitDll.absolutePath: ""),
+                       project.ext.unityNUnitDll.absolutePath: ""),
                sprintf("/property:BaseIntermediateOutputPath=%s%s",
                        intermediatesDir.absolutePath,
                        File.separator),
@@ -787,7 +795,8 @@ Task createXbuildTask(String taskName, String taskDescription,
                        binaryOutputDir.absolutePath,
                        File.separator),
                "/verbosity:quiet",
-               projectToBuild.absolutePath])
+               projectToBuild.absolutePath
+              ])
       }
     }
   }
@@ -1439,9 +1448,10 @@ Task buildVersionHandlerImpl = createBuildPluginDllTask(
 Task buildAndroidResolver = createBuildPluginDllTask(
   "AndroidResolver", "AndroidResolver", "Google.JarResolver.dll", true,
   [updateEmbeddedGradleWrapper, buildVersionHandlerImpl])
-Task buildIosResolver = createBuildPluginDllTask(
-  "IosResolver", "IOSResolver", "Google.IOSResolver.dll", true,
-  [buildAndroidResolver])
+if (project.ext.operatingSystemSupportsIos)
+  Task buildIosResolver = createBuildPluginDllTask(
+    "IosResolver", "IOSResolver", "Google.IOSResolver.dll", true,
+    [buildAndroidResolver])
 Task buildPackageManagerResolver = createBuildPluginDllTask(
   "PackageManagerResolver", "PackageManagerResolver",
   "Google.PackageManagerResolver.dll", true,
@@ -1502,8 +1512,12 @@ Iterable<Task> copyComponentsToStagingAreaTasks = [
     copyAndroidResolverStaging,
     copyVersionHandlerStaging,
     copyVersionHandlerImplStaging,
-    copyIosResolverStaging,
-    copyPackageManagerResolverStaging].collect {
+    copyPackageManagerResolverStaging]
+
+  if (project.ext.operatingSystemSupportsIos)
+    copyComponentsToStagingAreaTasks += [ copyIosResolverStaging ]
+
+  copyComponentsToStagingAreaTasks.collect {
   task ->
     createCopyFilesTask(
       sprintf("copy%sToStagingArea", task.ext.componentName),
