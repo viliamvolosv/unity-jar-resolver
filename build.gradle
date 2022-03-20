@@ -39,7 +39,7 @@ project.ext {
      (OperatingSystem.WINDOWS):
      ["\\Program Files\\Unity\\Editor\\Unity.exe"] +
      (new FileNameFinder()).getFileNames(
-       "\\", "Program Files\\Unity\\Hub\\Editor\\*\\Editor\\Unity.exe"),
+       "\\Program Files\\Unity\\Hub\\Editor", "*\\Editor\\Unity.exe"),
      (OperatingSystem.LINUX): ["/opt/Unity/Editor/Unity"]][operatingSystem]
 
   // Search for the Unity editor executable.
