@@ -1,3 +1,6 @@
+# Version 1.2.176 - Mar 16, 2023
+* bla bla bla
+
 # Version 1.2.175 - Nov 16, 2022
 * General - Added tvOS podfile support to the iOS resolver.
 
