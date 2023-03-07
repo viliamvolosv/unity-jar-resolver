@@ -35,6 +35,10 @@
         "com.google.external-dependency-manager/ExternalDependencyManager/Editor/1.2.174": "2a82085e2b06441b96c360b7fe97f98c"
     },
     "1.2.175": {
-        "com.google.external-dependency-manager/ExternalDependencyManager/Editor/1.2.175": "ba0c697ad191428fac6b53f4ca8f8d4a"
+        "com.google.external-dependency-manager/ExternalDependencyManager/Editor/1.2.175": "ba0c697ad191428fac6b53f4ca8f8d4a",
+        "com.google.external-dependency-manager\\ExternalDependencyManager\\Editor\\1.2.175": "9463c9b5ab5a461e93e693c026c3bff4"
+    },
+    "1.2.176": {
+        "com.google.external-dependency-manager\\ExternalDependencyManager\\Editor\\1.2.176": "9d45d1eabc84445abf8703488036cb92"
     }
 }

@@ -121,7 +121,7 @@ project.ext {
     "XBUILD_EXE", false, {
       unityRootDirTree.matching {
         include (operatingSystem == OperatingSystem.WINDOWS ?
-                 "**/bin/xbuild.bat" : "**/xbuild")
+                 "**/bin/msbuild.bat" : "**/xbuild")
         exclude unitySearchDirExcludes
       }
     })
@@ -235,7 +235,7 @@ project.ext {
   // Directory for testing.
   testDir = new File(scriptDirectory, "test_output")
   // Version of the plugin (update this with CHANGELOG.md on each release).
-  pluginVersion = "1.2.175"
+  pluginVersion = "1.2.176"
   // Directory that contains the template plugin.
   // Files under this directory are copied into the staging area for the
   // plugin.
@@ -292,11 +292,11 @@ project.ext {
   // Changelog file.
   changelog = new File(scriptDirectory, "CHANGELOG.md")
   pythonBootstrapDir = new File(buildDir, "python_bootstrap")
-  pythonBinDir = new File(new File(pythonBootstrapDir, "python"), "bin")
+  pythonBinDir = new File(pythonBootstrapDir, "python")
   // Python binary after it has been bootstrapped.
-  pythonExe = new File(pythonBinDir, "python3")
+  pythonExe = new File(pythonBinDir, "python.exe")
   // Pip binary after it has been bootstrapped.
-  pipExe = new File(pythonBinDir, "pip3")
+  pipExe = new File(new File(new File(pythonBootstrapDir, "python"), "Scripts"), "pip3.exe")
   // Python packages required by export_unity_package.py
   exportUnityPackageRequirements = ["absl-py", "PyYAML"]
   // Python packages required by gen_guids.py
